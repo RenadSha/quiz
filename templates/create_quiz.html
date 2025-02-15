@@ -1,0 +1,93 @@
+{% extends "main.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 border-danger">
+        <h1 class="text-center text-danger"><i class="fas fa-plus-circle"></i> Maak een Nieuwe Quiz</h1>
+
+        <form method="post" id="quiz-form">
+            {% csrf_token %}
+
+            <!-- Quiz Form -->
+            <h3 class="text-danger">Quiz Details</h3>
+            {{ quiz_form.as_p }}
+
+            <!-- Questions Section -->
+            <h3 class="text-danger mt-4">Vragen Toevoegen</h3>
+            <div id="question-container">
+                {{ question_formset.management_form }}
+                {% for form in question_formset %}
+                    <div class="question-form border p-3 rounded mb-3">
+                        {{ form.as_p }}
+                        <button type="button" class="btn btn-danger btn-sm remove-question">❌ Vraag verwijderen</button>
+                        
+                        <!-- Answers Section -->
+                        <h5>Antwoorden</h5>
+                        <div class="answer-container">
+                            {{ form.instance.answer_set.all.as_p }}
+                        </div>
+                        <button type="button" class="btn btn-success btn-sm add-answer">➕ Antwoord toevoegen</button>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="button" class="btn btn-primary mt-3" id="add-question">➕ Vraag toevoegen</button>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-danger btn-lg">
+                    <i class="fas fa-check-circle"></i> Quiz Aanmaken
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const questionContainer = document.getElementById("question-container");
+        const addQuestionBtn = document.getElementById("add-question");
+
+        // Add question dynamically
+        addQuestionBtn.addEventListener("click", function() {
+            let newQuestion = document.createElement("div");
+            newQuestion.classList.add("question-form", "border", "p-3", "rounded", "mb-3");
+
+            newQuestion.innerHTML = `
+                <input type="text" name="question-text" class="form-control mb-2" placeholder="Voer een vraag in">
+                <button type="button" class="btn btn-danger btn-sm remove-question">❌ Vraag verwijderen</button>
+                <h5>Antwoorden</h5>
+                <div class="answer-container">
+                    <div class="answer-template">
+                        <input type="text" name="answer-text" class="form-control mb-2" placeholder="Antwoord">
+                        <input type="checkbox" name="is_correct" class="form-check-input"> Correct
+                    </div>
+                    <button type="button" class="btn btn-success btn-sm add-answer">➕ Antwoord toevoegen</button>
+                </div>
+            `;
+
+            questionContainer.appendChild(newQuestion);
+        });
+
+        // Remove a question
+        questionContainer.addEventListener("click", function(e) {
+            if (e.target.classList.contains("remove-question")) {
+                e.target.parentElement.remove();
+            }
+        });
+
+        // Add an answer to a question
+        questionContainer.addEventListener("click", function(e) {
+            if (e.target.classList.contains("add-answer")) {
+                let answerContainer = e.target.previousElementSibling;
+                let newAnswer = document.createElement("div");
+                newAnswer.innerHTML = `
+                    <input type="text" name="answer-text" class="form-control mb-2" placeholder="Antwoord">
+                    <input type="checkbox" name="is_correct" class="form-check-input"> Correct
+                `;
+                answerContainer.appendChild(newAnswer);
+            }
+        });
+    });
+</script>
+
+{% endblock %}

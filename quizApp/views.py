@@ -8,7 +8,9 @@ from .forms import CreateNewUser
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
+from .forms import QuizForm, QuestionFormSet, AnswerFormSet
 # Create your views here.
+
 
 
 # @allowedUsers(allowedGroups='customer')
@@ -132,3 +134,68 @@ def register(request):
 def userLogout(request):
     logout(request)
     return redirect('login')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required
+def create_quiz(request):
+    if request.method == "POST":
+        quiz_form = QuizForm(request.POST)
+
+        if quiz_form.is_valid():
+            # Save the quiz first
+            quiz = quiz_form.save(commit=False)
+            quiz.owner = request.user
+            quiz.save()
+
+            # Retrieve question and answer data from request.POST
+            questions_data = request.POST.getlist('question-text')
+            answers_data = request.POST.getlist('answer-text')
+            correct_answers_data = request.POST.getlist('is_correct')
+
+            question_objects = []
+            answer_objects = []
+            answer_index = 0  # To keep track of answers linked to questions
+
+            # Loop through each question input
+            for question_text in questions_data:
+                if question_text.strip():  # Ensure question is not empty
+                    question = Question.objects.create(quiz=quiz, text=question_text)
+                    question_objects.append(question)
+
+                    # Each question has multiple answers (3 default in formset)
+                    for _ in range(3):  # Assuming each question has 3 answers
+                        if answer_index < len(answers_data) and answers_data[answer_index].strip():
+                            is_correct = correct_answers_data[answer_index] == 'on' if answer_index < len(correct_answers_data) else False
+                            answer = Answer.objects.create(
+                                question=question,
+                                text=answers_data[answer_index],
+                                is_correct=is_correct
+                            )
+                            answer_objects.append(answer)
+
+                        answer_index += 1  # Move to next answer
+
+            messages.success(request, "Quiz succesvol aangemaakt met alle vragen en antwoorden!")
+            return redirect('home')
+
+    else:
+        quiz_form = QuizForm()
+
+    return render(request, "create_quiz.html", {
+        "quiz_form": quiz_form,
+    })
+
