@@ -1,0 +1,25 @@
+
+
+<container>
+    <h1>{{ quiz.name }}</h1>
+    
+    <form method="post" action="{% url 'submit_quiz' quiz.id %}">
+        {% csrf_token %}
+        
+        {% for question in quiz.questions.all %}
+            <fieldset>
+                <legend><strong>{{ question.text }}</strong></legend>
+                {% for answer in question.answers.all %}
+                    <label>
+                        <input type="radio" name="question_{{ question.id }}" value="{{ answer.id }}">
+                        {{ answer.text }}
+                    </label><br>
+                {% endfor %}
+            </fieldset>
+            <br>
+        {% endfor %}
+        
+        <button type="submit">Quiz indienen</button>
+    </form>
+
+</container>

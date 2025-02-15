@@ -1,0 +1,25 @@
+<container>
+    <h1>Welkom bij de Quiz App!</h1>
+
+    {% if user.is_authenticated %}
+        <h2>Uitnodigingen</h2>
+        {% if invites %}
+            <ul>
+                {% for invite in invites %}
+                    <li>
+                        <strong>{{ invite.sender }}</strong> heeft je uitgenodigd voor de quiz: 
+                        <strong>{{ invite.quiz.name }}</strong>
+                        <br>
+                        <a href="{% url 'accept_invite' invite.id %}">✅ Accepteren</a> | 
+                        <a href="#">❌ Weigeren</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Je hebt geen openstaande uitnodigingen.</p>
+        {% endif %}
+    {% else %}
+        <p><a href="{% url 'login' %}">Log in</a> om je uitnodigingen te bekijken.</p>
+    {% endif %}
+
+</container>
