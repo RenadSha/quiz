@@ -1,6 +1,24 @@
 <container>
+
     <h1>Resultaat voor {{ quiz.name }}</h1>
     <p>Je hebt {{ score }} van de {{ total_questions }} vragen correct!</p>
+
+    <h2>Leaderboard</h2>
+    <table border="1">
+        <tr>
+            <th>Gebruiker</th>
+            <th>Score</th>
+        </tr>
+        {% for quiz_user in leaderboard %}
+            <tr>
+                <td>{{ quiz_user.user.username }}</td>
+                <td>{{ quiz_user.score }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
     <a href="{% url 'home' %}">Terug naar home</a>
+
+
 </container>
 

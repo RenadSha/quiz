@@ -7,6 +7,7 @@ from quizProject import settings
 from .forms import CreateNewUser
 from .models import *
 from django.contrib.auth.decorators import login_required
+from django.utils.timezone import now
 # Create your views here.
 
 
@@ -15,7 +16,14 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     invites = Invite.objects.filter(receiver=request.user, is_accepted=False)
     return render(request, "home.html", {'invites': invites})
+@login_required
+def start_quiz(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id, owner=request.user)
 
+    # Start de quiz
+    quiz.start_quiz()
+    
+    return redirect('quiz_page', quiz_id=quiz.id)
 @login_required
 def quiz_page(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
@@ -40,12 +48,13 @@ def accept_invite(request, invite_id):
 def submit_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     user = request.user
-
-    # Zorg dat de gebruiker in de quiz zit
     quiz_user, created = QuizUser.objects.get_or_create(quiz=quiz, user=user)
 
-    score = 0  # Start score op 0
+    # Controleer of de tijd verstreken is
+    if quiz.started_at and (now() - quiz.started_at).total_seconds() > (quiz.duration * 60):
+        return redirect('quiz_result', quiz_id=quiz.id)  # Tijd is om, stuur naar resultaat
 
+    score = 0
 
     if request.method == "POST":
         for question in quiz.questions.all():
@@ -53,25 +62,28 @@ def submit_quiz(request, quiz_id):
             if selected_answer_id:
                 answer = Answer.objects.get(id=selected_answer_id)
                 if answer.is_correct:
-                    score += 1  # Tel score op bij correcte antwoorden
+                    score += 1
 
-    # Update de score van de gebruiker
     quiz_user.score = score
     quiz_user.save()
 
     return redirect('quiz_result', quiz_id=quiz.id)
 
-
 @login_required
 def quiz_result(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     quiz_user = QuizUser.objects.get(quiz=quiz, user=request.user)
-    
+
+    # Sorteer de spelers op score (hoog naar laag)
+    leaderboard = QuizUser.objects.filter(quiz=quiz).order_by('-score')
+
     return render(request, 'quiz_result.html', {
         'quiz': quiz,
         'score': quiz_user.score,
         'total_questions': quiz.questions.count(),
+        'leaderboard': leaderboard
     })
+
 
 def userLogin(request):
 

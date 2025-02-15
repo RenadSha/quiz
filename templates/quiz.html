@@ -2,6 +2,12 @@
 
 <container>
     <h1>{{ quiz.name }}</h1>
+    {% if user == quiz.owner and not quiz.is_active %}
+    <form method="post" action="{% url 'start_quiz' quiz.id %}">
+        {% csrf_token %}
+        <button type="submit">Start de quiz</button>
+    </form>
+    {% endif %}
     
     <form method="post" action="{% url 'submit_quiz' quiz.id %}">
         {% csrf_token %}
