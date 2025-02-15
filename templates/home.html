@@ -1,4 +1,6 @@
-<container>
+{% extends "main.html" %}
+{% block content%}
+<div class='container'>
     <h1>Welkom bij de Quiz App!</h1>
 
     {% if user.is_authenticated %}
@@ -22,4 +24,6 @@
         <p><a href="{% url 'login' %}">Log in</a> om je uitnodigingen te bekijken.</p>
     {% endif %}
 
-</container>
+        </div>
+
+{%endblock%}

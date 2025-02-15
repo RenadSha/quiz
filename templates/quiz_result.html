@@ -1,24 +1,35 @@
-<container>
+{% extends "main.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm p-4">
+        <h1 class="text-center text-danger">Resultaat voor {{ quiz.name }}</h1>
+        <p class="text-center lead">Je hebt <strong>{{ score }}</strong> van de <strong>{{ total_questions }}</strong> vragen correct!</p>
+        
+        <h2 class="mt-4 text-danger">Leaderboard</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Gebruiker</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quiz_user in leaderboard %}
+                        <tr>
+                            <td>{{ quiz_user.user.username }}</td>
+                            <td>{{ quiz_user.score }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'home' %}" class="btn btn-danger">Terug naar home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-    <h1>Resultaat voor {{ quiz.name }}</h1>
-    <p>Je hebt {{ score }} van de {{ total_questions }} vragen correct!</p>
-
-    <h2>Leaderboard</h2>
-    <table border="1">
-        <tr>
-            <th>Gebruiker</th>
-            <th>Score</th>
-        </tr>
-        {% for quiz_user in leaderboard %}
-            <tr>
-                <td>{{ quiz_user.user.username }}</td>
-                <td>{{ quiz_user.score }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-
-    <a href="{% url 'home' %}">Terug naar home</a>
-
-
-</container>
 
