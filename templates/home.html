@@ -1,29 +1,52 @@
 {% extends "main.html" %}
-{% block content%}
-<div class='container'>
-    <h1>Welkom bij de Quiz App!</h1>
+{% block content %}
 
-    {% if user.is_authenticated %}
-        <h2>Uitnodigingen</h2>
-        {% if invites %}
-            <ul>
-                {% for invite in invites %}
-                    <li>
-                        <strong>{{ invite.sender }}</strong> heeft je uitgenodigd voor de quiz: 
-                        <strong>{{ invite.quiz.name }}</strong>
-                        <br>
-                        <a href="{% url 'accept_invite' invite.id %}">✅ Accepteren</a> | 
-                        <a href="#">❌ Weigeren</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Je hebt geen openstaande uitnodigingen.</p>
-        {% endif %}
-    {% else %}
-        <p><a href="{% url 'login' %}">Log in</a> om je uitnodigingen te bekijken.</p>
-    {% endif %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-lg p-4 border-danger">
+                <h1 class="text-center text-danger">
+                    <i class="fas fa-brain"></i> Welkom bij de Quiz App!
+                </h1>
 
+                <!-- Authenticated User -->
+                {% if user.is_authenticated %}
+                    <h2 class="mt-4 text-danger"><i class="fas fa-envelope-open-text"></i> Uitnodigingen</h2>
+                    
+                    {% if invites %}
+                        <ul class="list-group">
+                            {% for invite in invites %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <strong>{{ invite.sender }}</strong> heeft je uitgenodigd voor de quiz: 
+                                        <strong class="text-danger">{{ invite.quiz.name }}</strong>
+                                    </span>
+                                    <span>
+                                        <a href="{% url 'accept_invite' invite.id %}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check-circle"></i> Accepteren
+                                        </a>
+                                        <a href="#" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times-circle"></i> Weigeren
+                                        </a>
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="alert alert-info mt-3 text-center">
+                            <i class="fas fa-info-circle"></i> Je hebt geen openstaande uitnodigingen.
+                        </div>
+                    {% endif %}
+                
+                <!-- User not logged in -->
+                {% else %}
+                    <div class="alert alert-warning text-center mt-3">
+                        <i class="fas fa-sign-in-alt"></i> <a href="{% url 'login' %}" class="text-decoration-none">Log in</a> om je uitnodigingen te bekijken.
+                    </div>
+                {% endif %}
+            </div>
         </div>
+    </div>
+</div>
 
-{%endblock%}
+{% endblock %}

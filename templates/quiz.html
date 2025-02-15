@@ -1,37 +1,52 @@
 {% extends "main.html" %}
 {% block content %}
+
 <div class="container mt-5">
-    <div class="card shadow-sm p-4">
-        <h1 class="text-center text-danger">{{ quiz.name }}</h1>
-        
-        {% if user == quiz.owner and not quiz.is_active %}
-        <form method="post" action="{% url 'start_quiz' quiz.id %}" class="text-center mt-3">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success">Start de quiz</button>
-        </form>
-        {% endif %}
-        
-        <form method="post" action="{% url 'submit_quiz' quiz.id %}" class="mt-4">
-            {% csrf_token %}
-            
-            {% for question in quiz.questions.all %}
-                <fieldset class="border p-3 rounded mb-4">
-                    <legend class="h5 text-danger">{{ question.text }}</legend>
-                    {% for answer in question.answers.all %}
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="{{ answer.id }}" id="answer_{{ answer.id }}">
-                            <label class="form-check-label" for="answer_{{ answer.id }}">
-                                {{ answer.text }}
-                            </label>
-                        </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-lg p-4 border-danger">
+                <h1 class="text-center text-danger">
+                    <i class="fas fa-question-circle"></i> {{ quiz.name }}
+                </h1>
+
+                <!-- Start Quiz Button (Only for Owner) -->
+                {% if user == quiz.owner and not quiz.is_active %}
+                <form method="post" action="{% url 'start_quiz' quiz.id %}" class="text-center mt-3">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-play-circle"></i> Start de quiz
+                    </button>
+                </form>
+                {% endif %}
+
+                <!-- Quiz Questions Form -->
+                <form method="post" action="{% url 'submit_quiz' quiz.id %}" class="mt-4">
+                    {% csrf_token %}
+
+                    {% for question in quiz.questions.all %}
+                        <fieldset class="border border-danger p-3 rounded mb-4">
+                            <legend class="h5 text-danger"><i class="fas fa-question"></i> {{ question.text }}</legend>
+                            {% for answer in question.answers.all %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="{{ answer.id }}" id="answer_{{ answer.id }}">
+                                    <label class="form-check-label" for="answer_{{ answer.id }}">
+                                        {{ answer.text }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </fieldset>
                     {% endfor %}
-                </fieldset>
-            {% endfor %}
-            
-            <div class="text-center">
-                <button type="submit" class="btn btn-danger">Quiz indienen</button>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-check-circle"></i> Quiz indienen
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+
 {% endblock %}

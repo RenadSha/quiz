@@ -1,35 +1,43 @@
 {% extends "main.html" %}
 {% block content %}
+
 <div class="container mt-5">
-    <div class="card shadow-sm p-4">
-        <h1 class="text-center text-danger">Resultaat voor {{ quiz.name }}</h1>
-        <p class="text-center lead">Je hebt <strong>{{ score }}</strong> van de <strong>{{ total_questions }}</strong> vragen correct!</p>
-        
-        <h2 class="mt-4 text-danger">Leaderboard</h2>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Gebruiker</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for quiz_user in leaderboard %}
-                        <tr>
-                            <td>{{ quiz_user.user.username }}</td>
-                            <td>{{ quiz_user.score }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="text-center mt-4">
-            <a href="{% url 'home' %}" class="btn btn-danger">Terug naar home</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-lg p-4 border-danger">
+                <h1 class="text-center text-danger"><i class="fas fa-trophy"></i> Resultaat voor {{ quiz.name }}</h1>
+                <p class="text-center lead">Je hebt <strong class="text-danger">{{ score }}</strong> van de <strong>{{ total_questions }}</strong> vragen correct!</p>
+                
+                <!-- Leaderboard -->
+                <h2 class="mt-4 text-danger"><i class="fas fa-list-ol"></i> Leaderboard</h2>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-danger text-center">
+                            <tr>
+                                <th>Gebruiker</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            {% for quiz_user in leaderboard %}
+                                <tr>
+                                    <td><i class="fas fa-user"></i> {{ quiz_user.user.username }}</td>
+                                    <td><strong>{{ quiz_user.score }}</strong></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Terug naar home knop -->
+                <div class="text-center mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-danger btn-lg">
+                        <i class="fas fa-home"></i> Terug naar home
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
-
-

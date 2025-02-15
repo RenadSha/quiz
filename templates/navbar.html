@@ -1,30 +1,41 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-danger">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'home'%}">
-        <img src="{% static 'images/book.png'%}" width="30" height="30" alt="quiz">
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          
-          <li class="nav-item">
-            <a class="nav-link" href="#">{{request.user}}</a>
-            
-          </li>
+        <!-- Brand Logo -->
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'images/book.png' %}" width="30" height="30" class="d-inline-block align-top" alt="Quiz">
+            QuizApp
+        </a>
 
-          <li class="nav-item">
-            <a class="nav-link" href="">Home</a>
-          </li>
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout'%}">Logout</a>
-          </li>
-        </ul>
-       
-      </div>
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto">
+                <!-- User Name -->
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="#"><i class="fas fa-user"></i> {{ request.user }}</a>
+                </li>
+
+                <!-- Home -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+
+                <!-- Logout -->
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </nav>
+</nav>
