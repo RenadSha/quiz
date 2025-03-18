@@ -11,7 +11,7 @@ class Quiz(models.Model):
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.id}"
     
     def participate_in_quiz(self, user):
         """Voegt een gebruiker toe aan de quiz als deelnemer."""
